@@ -4,9 +4,17 @@ phases:
   pre_build:
     commands:
       - "terraform --version"
-      - "echo StackName var is $TF_ENV_StackName"
       - "cd modules/rdcb && terraform init -no-color -input=false"
       - "terraform plan -no-color -out=tfplan -input=false"
   build:
     commands:
-
+      - terraform apply -no-color -input=false tfplan
+  post_build:
+    commands:
+      - if [ "${DESTROY_AFTER_TEST}" = "true" ]; then terraform destroy -no-color -input=false -force; fi
+artifacts:
+  files:
+    - modules/rdcb/terraform.tfstate
+    - modules/rdcb/terraform.log
+    - modules/rdcb/terraform_output.log
+  discard-paths: yes
