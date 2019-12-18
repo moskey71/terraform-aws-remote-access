@@ -4,9 +4,9 @@ phases:
   pre_build:
     commands:
       - "apk update"
-      - "apk add python3=3.6.8-r2"
-      - "apk add python3-dev=3.6.8-r2"
-      - "apk add py3-setuptools=40.6.3-r0"
+      - "apk add python3
+      - "apk add python3-dev
+      - "apk add py3-setuptools
       - "pip3 install awscli"
       - "apk add --update awscli"
       - "terraform --version"
