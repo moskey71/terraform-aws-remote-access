@@ -8,7 +8,6 @@ phases:
       - "apk add python3-dev"
       - "apk add py3-setuptools"
       - "pip3 install awscli"
-      - "apk add --update awscli"
       - "terraform --version"
       - "cd modules/rdcb && terraform init -no-color -input=false"
       - "terraform plan -no-color -out=tfplan -input=false"
