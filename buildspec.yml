@@ -3,5 +3,5 @@ version: 0.2
 phases:
   build:
     commands:
-      - "--version"
+      - "terraform --version"
       - "cd modules/rdcb && terraform init"
