@@ -6,6 +6,7 @@ phases:
       - "terraform --version"
       - "cd modules/rdcb && terraform init -no-color -input=false"
       - "terraform plan -no-color -out=tfplan -input=false"
+      - "echo StackName var is $TF_ENV_StackName"
   build:
     commands:
 
