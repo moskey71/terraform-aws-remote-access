@@ -3,6 +3,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - "apk add --update awscli"
       - "terraform --version"
       - "cd modules/rdcb && terraform init -no-color -input=false"
       - "terraform plan -no-color -out=tfplan -input=false"
