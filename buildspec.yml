@@ -1,7 +1,7 @@
 version: 0.2
 
 phases:
-  pre-build:
+  pre_build:
     commands:
       - "terraform --version"
       - "cd modules/rdcb && terraform init -no-color -input=false"
