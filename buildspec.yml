@@ -35,4 +35,7 @@ artifacts:
     - modules/rdcb/terraform.tfstate
     - modules/rdcb/terraform.log
     - modules/rdcb/terraform_output.log
-  discard-paths: yes
+    - modules/rdgw/terraform.tfstate
+    - modules/rdgw/terraform.log
+    - modules/rdgw/terraform_output.log
+  discard-paths: no
