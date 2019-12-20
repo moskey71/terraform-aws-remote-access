@@ -12,14 +12,18 @@ phases:
       - "START_DIR=$(pwd)"
       - "cd $START_DIR/modules/rdcb && terraform init -no-color -input=false"
       - "terraform plan -no-color -out=tfplan -input=false"
+      - "export TF_VAR_StackName=rdcb-ci-test"
       - "cd $START_DIR/modules/rdgw && terraform init -no-color -input=false"
+      - "export TF_VAR_StackName=rdgw-ci-test"
       - "terraform plan -no-color -out=tfplan -input=false"
   build:
     commands:
       - terraform apply -no-color -input=false tfplan
   post_build:
     commands:
+      - "export TF_VAR_StackName=rdcb-ci-test"
       - if [ "${DESTROY_AFTER_TEST}" = "true" ]; then cd $START_DIR/modules/rdcb && terraform destroy -no-color -input=false -force; fi
+      - "export TF_VAR_StackName=rdgw-ci-test"
       - if [ "${DESTROY_AFTER_TEST}" = "true" ]; then cd $START_DIR/modules/rdgw && terraform destroy -no-color -input=false -force; fi
 artifacts:
   files:
