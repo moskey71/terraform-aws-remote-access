@@ -228,6 +228,13 @@ Parameters:
     MaxLength: '1024'
     MinLength: '1'
     Type: String
+  TerminationProtection:
+    AllowedValues:
+      - 'false'
+      - 'true'
+    Default: 'true'
+    Description: Enable or disable instance termination protection.  Protection is enabled by default.
+    Type: String
   VpcId:
     Description: VPC ID
     Type: AWS::EC2::VPC::Id
@@ -790,7 +797,7 @@ Resources:
             DeleteOnTermination: true
             VolumeSize: 50
             VolumeType: gp2
-      DisableApiTermination: true
+      DisableApiTermination: !Ref TerminationProtection
       EbsOptimized: !FindInMap [InstanceTypeMap, !Ref InstanceType, SupportsEbsOptimized]
       IamInstanceProfile: !Ref Ec2IamInstanceProfile
       ImageId: !If [UseAmiLookup, !Sub '${AmiIdLookup.Id}', !Ref AmiId]

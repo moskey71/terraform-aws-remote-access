@@ -156,6 +156,12 @@ variable "StackName" {
   type        = string
 }
 
+variable "TerminationProtection" {
+  default     = true
+  description = "Enable or disable instance termination protection.  Protection is enabled by default."
+  type        = string
+}
+
 variable "VpcId" {
   default     = "vpc-12345678"
   description = "VPC to deploy instance into"

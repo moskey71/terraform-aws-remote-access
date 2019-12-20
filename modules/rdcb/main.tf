@@ -135,6 +135,7 @@ locals {
     "\"SnapshotFrequency=${var.SnapshotFrequency}\"",
     "\"SsmKeyId=${var.SsmKeyId}\"",
     "\"SsmRdcbCredential=${var.SsmRdcbCredential}\"",
+    "\"TerminationProtection=${var.TerminationProtection}\"",
     "\"VpcId=${var.VpcId}\"",
     "--capabilities CAPABILITY_IAM",
   ]
