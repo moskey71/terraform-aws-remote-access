@@ -9,14 +9,18 @@ phases:
       - "apk add py3-setuptools"
       - "pip3 install awscli"
       - "terraform --version"
-      - "cd modules/rdcb && terraform init -no-color -input=false"
+      - "START_DIR=$(pwd)"
+      - "cd $START_DIR/modules/rdcb && terraform init -no-color -input=false"
+      - "terraform plan -no-color -out=tfplan -input=false"
+      - "cd $START_DIR/modules/rdgw && terraform init -no-color -input=false"
       - "terraform plan -no-color -out=tfplan -input=false"
   build:
     commands:
       - terraform apply -no-color -input=false tfplan
   post_build:
     commands:
-      - if [ "${DESTROY_AFTER_TEST}" = "true" ]; then terraform destroy -no-color -input=false -force; fi
+      - if [ "${DESTROY_AFTER_TEST}" = "true" ]; then cd $START_DIR/modules/rdcb && terraform destroy -no-color -input=false -force; fi
+      - if [ "${DESTROY_AFTER_TEST}" = "true" ]; then cd $START_DIR/modules/rdgw && terraform destroy -no-color -input=false -force; fi
 artifacts:
   files:
     - modules/rdcb/terraform.tfstate
