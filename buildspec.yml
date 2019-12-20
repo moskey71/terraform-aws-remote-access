@@ -18,7 +18,12 @@ phases:
       - "terraform plan -no-color -out=tfplan -input=false"
   build:
     commands:
-      - terraform apply -no-color -input=false tfplan
+      - "cd $START_DIR/modules/rdcb"
+      - "export TF_VAR_StackName=rdcb-ci-test"
+      - "terraform apply -no-color -input=false tfplan"
+      - "cd $START_DIR/modules/rdgw"
+      - "export TF_VAR_StackName=rdgw-ci-test"
+      - "terraform apply -no-color -input=false tfplan"
   post_build:
     commands:
       - "export TF_VAR_StackName=rdcb-ci-test"
