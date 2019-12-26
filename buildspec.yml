@@ -31,8 +31,11 @@ phases:
       - "cd $START_DIR/modules/rdcb"
       - "terraform apply -no-color -input=false tfplan"
       - "MY_VAR=$(fc -ln | grep -m 1 "rdcb-hostname = " | sed 's/rdcb-hostname = //')"
-      - "TF_VAR_ConnectionBrokerFqdn=$MY_VAR"
-      - "TF_VAR_UserProfileDiskPath=\\\\\\\\\\\\\$MY_VAR\\\\Profiles$
+      - "echo $MY_VAR"
+      - "export TF_VAR_ConnectionBrokerFqdn=$MY_VAR"
+      - "echo $TF_VAR_ConnectionBrokerFqdn"
+      - "export TF_VAR_UserProfileDiskPath=\\\\\\\\\\\\\$MY_VAR\\\\Profiles$
+      - "echo $TF_VAR_UserProfileDiskPath"
       - "cd $START_DIR/modules/rdgw"
       - "terraform apply -no-color -input=false tfplan"
       - "cd $START_DIR/modules/guac"
