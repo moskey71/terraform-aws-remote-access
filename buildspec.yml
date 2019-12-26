@@ -26,6 +26,8 @@ phases:
       - aws s3 cp s3://$AWS_S3_BUCKET/modules/rdsh/terraform.tfvars .
       - terraform init -no-color -input=false
       - terraform plan -no-color -out=tfplan -input=false
+      - history | tail -5
+      - exit 1
   build:
     commands:
       - cd $START_DIR/modules/rdcb
