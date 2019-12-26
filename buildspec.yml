@@ -34,7 +34,7 @@ phases:
       - "echo $MY_VAR"
       - "export TF_VAR_ConnectionBrokerFqdn=$MY_VAR"
       - "echo $TF_VAR_ConnectionBrokerFqdn"
-      - "export TF_VAR_UserProfileDiskPath=\\\\\\\\\\\\\$MY_VAR\\\\Profiles$
+      - "export TF_VAR_UserProfileDiskPath=\\\\\\\\\\\\\$MY_VAR\\\\Profiles$"
       - "echo $TF_VAR_UserProfileDiskPath"
       - "cd $START_DIR/modules/rdgw"
       - "terraform apply -no-color -input=false tfplan"
