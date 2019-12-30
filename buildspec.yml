@@ -13,22 +13,19 @@ phases:
       - cd $START_DIR/modules/rdcb
       - aws s3 cp s3://$AWS_S3_BUCKET/modules/rdcb/terraform.tfvars .
       - terraform init -no-color -input=false
-      - terraform plan -no-color -out=tfplan -input=false
       - cd $START_DIR/modules/rdgw
       - aws s3 cp s3://$AWS_S3_BUCKET/modules/rdgw/terraform.tfvars .
       - terraform init -no-color -input=false
-      - terraform plan -no-color -out=tfplan -input=false
       - cd $START_DIR/modules/guac
       - aws s3 cp s3://$AWS_S3_BUCKET/modules/guac/terraform.tfvars .
       - terraform init -no-color -input=false
-      - terraform plan -no-color -out=tfplan -input=false
       - cd $START_DIR/modules/rdsh
       - aws s3 cp s3://$AWS_S3_BUCKET/modules/rdsh/terraform.tfvars .
       - terraform init -no-color -input=false
-      - terraform plan -no-color -out=tfplan -input=false
   build:
     commands:
       - cd $START_DIR/modules/rdcb
+      - terraform plan -no-color -out=tfplan -input=false
       - terraform apply -no-color -input=false tfplan
       - MY_VAR=$(terraform output rdcb-hostname -no-color)
       - echo $MY_VAR
@@ -37,10 +34,13 @@ phases:
       - export TF_VAR_UserProfileDiskPath=\\\\\\\\\\\\$MY_VAR\\\\Profiles$
       - echo $TF_VAR_UserProfileDiskPath
       - cd $START_DIR/modules/rdgw
+      - terraform plan -no-color -out=tfplan -input=false
       - terraform apply -no-color -input=false tfplan
       - cd $START_DIR/modules/guac
+      - terraform plan -no-color -out=tfplan -input=false
       - terraform apply -no-color -input=false tfplan
       - cd $START_DIR/modules/rdsh
+      - terraform plan -no-color -out=tfplan -input=false
       - terraform apply -no-color -input=false tfplan
   post_build:
     commands:
