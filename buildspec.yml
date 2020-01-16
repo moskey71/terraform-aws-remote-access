@@ -28,11 +28,12 @@ phases:
       - terraform plan -no-color -out=tfplan -input=false
       - terraform apply -no-color -input=false tfplan
       - MY_VAR=$(terraform output rdcb-hostname -no-color)
-      - echo $MY_VAR
       - export TF_VAR_ConnectionBrokerFqdn=$MY_VAR
       - echo $TF_VAR_ConnectionBrokerFqdn
       - export TF_VAR_UserProfileDiskPath=\\\\\\\\$MY_VAR\\Profiles$
       - echo $TF_VAR_UserProfileDiskPath
+      - export TF_VAR_ExtraSecurityGroupIds=$(terraform output rdsh-sg-id -no-color)
+      - echo $TF_VAR_ExtraSecurityGroupIds
       - cd $START_DIR/modules/rdsh
       - terraform plan -no-color -out=tfplan -input=false
       - terraform apply -no-color -input=false tfplan
