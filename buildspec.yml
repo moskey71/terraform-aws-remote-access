@@ -32,7 +32,7 @@ phases:
       - echo $TF_VAR_ConnectionBrokerFqdn
       - export TF_VAR_UserProfileDiskPath=\\\\\\\\$MY_VAR\\Profiles$
       - echo $TF_VAR_UserProfileDiskPath
-      - export TF_VAR_ExtraSecurityGroupIds=[$(terraform output rdsh-sg-id -no-color)]
+      - export TF_VAR_ExtraSecurityGroupIds=[\"$(terraform output rdsh-sg-id -no-color)\"]
       - echo $TF_VAR_ExtraSecurityGroupIds
       - cd $START_DIR/modules/rdsh
       - terraform plan -no-color -out=tfplan -input=false
