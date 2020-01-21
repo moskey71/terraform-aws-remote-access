@@ -40,9 +40,11 @@ phases:
       - cd $START_DIR/modules/rdgw
       - terraform plan -no-color -out=tfplan -input=false
       - terraform apply -no-color -input=false tfplan
+      - python3 ./$START_DIR/tests/web_connectivity.py --url $RDGW_URL --searchstring "IIS Windows Server"
       - cd $START_DIR/modules/guac
       - terraform plan -no-color -out=tfplan -input=false
       - terraform apply -no-color -input=false tfplan
+      - python3 ./$START_DIR/tests/web_connectivity.py --url $GUAC_URL --searchstring "guac-login"
   post_build:
     commands:
       - if [ "${DESTROY_AFTER_TEST}" = "true" ]; then cd $START_DIR/modules/guac && terraform destroy -no-color -input=false -force; fi
