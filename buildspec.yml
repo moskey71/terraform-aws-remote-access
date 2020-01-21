@@ -8,6 +8,7 @@ phases:
       - apk add python3-dev
       - apk add py3-setuptools
       - pip3 install awscli
+      - python3 --version
       - terraform --version
       - START_DIR=$(pwd)
       - cd $START_DIR/modules/rdcb
