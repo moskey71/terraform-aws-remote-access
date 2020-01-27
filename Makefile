@@ -47,6 +47,17 @@ install/gh-release/%:
 	$* --version
 	@ echo "[$@]: Completed successfully!"
 
+install/pip/%: PYTHON ?= python
+install/pip/%: | guard/env/PYPI_PKG_NAME
+	@ echo "[$@]: Installing $*..."
+	$(PYTHON) -m pip install --user $(PYPI_PKG_NAME)
+	ln -sf ~/.local/bin/$* $(BIN_DIR)/$*
+	$* --version
+	@ echo "[$@]: Completed successfully!"
+
+black/install:
+	@ $(MAKE) install/pip/$(@D) PYPI_PKG_NAME=$(@D)
+
 zip/install:
 	@ echo "[$@]: Installing $(@D)..."
 	apt-get install zip -y
@@ -78,15 +89,6 @@ shellcheck/install: $(BIN_DIR) guard/program/xz
 	rm -rf $(@D)-*
 	$(@D) --version
 
-cfn/%: FIND_CFN_JSON ?= find . -name '*.template.cfn.json' -type f
-cfn/%: FIND_CFN_YAML ?= find . -name '*.template.cfn.yaml' -type f
-cfn/lint: | guard/program/cfn-lint
-	$(FIND_CFN_JSON) | $(XARGS) cfn-lint -t {}
-	$(FIND_CFN_YAML) | $(XARGS) cfn-lint -t {}
-
-yaml/lint: | guard/program/yamllint
-	yamllint --strict .
-
 terraform/lint: | guard/program/terraform
 	@ echo "[$@]: Linting Terraform files..."
 	terraform fmt -check=true -diff=true
@@ -114,23 +116,46 @@ json/format: | guard/program/jq
 	$(FIND_JSON) | $(XARGS) bash -c 'echo "$$(jq --indent 4 -S . "{}")" > "{}"'
 	@ echo "[$@]: Successfully formatted JSON files!"
 
-tfdocs-awk/install: $(BIN_DIR)
-tfdocs-awk/install: ARCHIVE := https://github.com/plus3it/tfdocs-awk/archive/0.0.0.tar.gz
-tfdocs-awk/install:
-	$(CURL) $(ARCHIVE) | tar -C $(BIN_DIR) --strip-components=1 --wildcards '*.sh' --wildcards '*.awk' -xzvf -
+docs/%: TFDOCS ?= terraform-docs --sort-by-required markdown table
+docs/%: README_FILES ?= find . -type f -name README.md
+docs/%: README_TMP ?= $(TMP)/README.tmp
+docs/%: TFDOCS_START_MARKER ?= <!-- BEGIN TFDOCS -->
+docs/%: TFDOCS_END_MARKER ?= <!-- END TFDOCS -->
 
-docs/generate: | tfdocs-awk/install guard/program/terraform-docs
+docs/tmp/%: | guard/program/terraform-docs
+	sed '/$(TFDOCS_START_MARKER)/,/$(TFDOCS_END_MARKER)/{//!d}' $* | awk '{print $$0} /$(TFDOCS_START_MARKER)/ {system("$(TFDOCS) $$(dirname $*)")} /$(TFDOCS_END_MARKER)/ {f=1}' > $(README_TMP)
+
+docs/generate/%:
 	@ echo "[$@]: Creating documentation files.."
-	@ bash -eu -o pipefail autodocs.sh -g
-	@ echo "[$@]: Documentation generated!"
+	@ $(MAKE) docs/tmp/$*
+	mv -f $(README_TMP) $*
+	@ echo "[$@]: Documentation files creation complete!"
 
-docs/lint: | tfdocs-awk/install guard/program/terraform-docs
-	@ echo "[$@] Linting documentation files.."
-	@ bash -eu -o pipefail autodocs.sh -l
-	@ echo "[$@] documentation linting complete!"
+docs/lint/%:
+	@ echo "[$@]: Linting documentation files.."
+	@ $(MAKE) docs/tmp/$*
+	diff $* $(README_TMP)
+	rm -f $(README_TMP)
+	@ echo "[$@]: Documentation files PASSED lint test!"
+
+docs/generate:
+	@ $(README_FILES) | $(XARGS) $(MAKE) docs/generate/{}
+
+docs/lint:
+	@ $(README_FILES) | $(XARGS) $(MAKE) docs/lint/{}
+
+python/lint: | guard/program/black
+	@ echo "[$@]: Linting Python files..."
+	black --check .
+	@ echo "[$@]: Python files PASSED lint test!"
+
+python/format: | guard/program/black
+	@ echo "[$@]: Formatting Python files..."
+	black .
+	@ echo "[$@]: Successfully formatted Python files!"
 
 terratest/install: | guard/program/go
-	cd tests && go mod init terraform-aws-remote-access/tests
+	cd tests && go mod init terraform-aws-tardigrade-inspector/tests
 	cd tests && go build ./...
 	cd tests && go mod tidy
 
