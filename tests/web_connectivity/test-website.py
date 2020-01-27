@@ -32,12 +32,12 @@ def search_page_content():
     import urllib.request
     import re
     with urllib.request.urlopen(url) as response:
-    html = response.read().decode('utf-8')
-    matches = re.findall(searchstring, html)
-    if len(matches) == 0:
-        return f"No matches for the phrase '{searchstring}' found!"
-    else:
-        return f"The phrase '{searchstring}' has been found!"
+        html = response.read().decode('utf-8')
+        matches = re.findall(searchstring, html)
+        if len(matches) == 0:
+            return f"No matches for the phrase '{searchstring}' found!"
+        else:
+            return f"The phrase '{searchstring}' has been found!"
 
 def test_page_availability():
     assert page_availability() == f"We're good to go", f"Page not available"
