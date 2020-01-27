@@ -48,8 +48,8 @@ def test_page_content():
     print('page_content Test Passed')
 
 def main():
-  test_page_availability()
-  test_page_content()
+    test_page_availability()
+    test_page_content()
 
 if __name__ == '__main__':
     main()
