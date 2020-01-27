@@ -81,6 +81,15 @@ jq/install: JQ_VERSION ?= latest
 jq/install: | $(BIN_DIR)
 	@ $(MAKE) install/gh-release/$(@D) FILENAME="$(BIN_DIR)/$(@D)" OWNER=stedolan REPO=$(@D) VERSION=$(JQ_VERSION) QUERY='.name | endswith("$(OS)64")'
 
+cfn/%: FIND_CFN_JSON ?= find . -name '*.template.cfn.json' -type f
+cfn/%: FIND_CFN_YAML ?= find . -name '*.template.cfn.yaml' -type f
+cfn/lint: | guard/program/cfn-lint
+	$(FIND_CFN_JSON) | $(XARGS) cfn-lint -t {}
+	$(FIND_CFN_YAML) | $(XARGS) cfn-lint -t {}
+
+yaml/lint: | guard/program/yamllint
+	yamllint --strict .
+
 shellcheck/install: SHELLCHECK_VERSION ?= latest
 shellcheck/install: SHELLCHECK_URL ?= https://storage.googleapis.com/shellcheck/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz
 shellcheck/install: $(BIN_DIR) guard/program/xz
@@ -155,7 +164,7 @@ python/format: | guard/program/black
 	@ echo "[$@]: Successfully formatted Python files!"
 
 terratest/install: | guard/program/go
-	cd tests && go mod init terraform-aws-tardigrade-inspector/tests
+	cd tests && go mod init terraform-aws-remote-access/tests
 	cd tests && go build ./...
 	cd tests && go mod tidy
 
