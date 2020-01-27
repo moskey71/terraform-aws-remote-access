@@ -78,6 +78,15 @@ shellcheck/install: $(BIN_DIR) guard/program/xz
 	rm -rf $(@D)-*
 	$(@D) --version
 
+cfn/%: FIND_CFN_JSON ?= find . -name '*.template.cfn.json' -type f
+cfn/%: FIND_CFN_YAML ?= find . -name '*.template.cfn.yaml' -type f
+cfn/lint: | guard/program/cfn-lint
+	$(FIND_CFN_JSON) | $(XARGS) cfn-lint -t {}
+	$(FIND_CFN_YAML) | $(XARGS) cfn-lint -t {}
+
+yaml/lint: | guard/program/yamllint
+	yamllint --strict .
+
 terraform/lint: | guard/program/terraform
 	@ echo "[$@]: Linting Terraform files..."
 	terraform fmt -check=true -diff=true

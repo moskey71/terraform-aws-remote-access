@@ -248,6 +248,7 @@ Resources:
     Type: Custom::AmiIdLookup
   DataVolume:
     DeletionPolicy: Snapshot
+    UpdateReplacePolicy: Snapshot
     Properties:
       AvailabilityZone: !Ref Ec2SubnetAz
       Size: !Ref DataVolumeSize

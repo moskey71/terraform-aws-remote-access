@@ -439,6 +439,7 @@ Resources:
           config:
             - join-domain
             - ps-modules
+            - check-upd-path
             - install-cloudwatch-agent
             - setup
             - suspend-azrebalance
@@ -619,6 +620,19 @@ Resources:
                 - ${PowershellCommand} -Command Write-Verbose 'Waiting for SSM to complete domain join, which reboots the instance automatically' -Verbose
                 - PowershellCommand: !FindInMap [ShellCommandMap, powershell, command]
               waitAfterCompletion: forever
+        check-upd-path:
+          commands:
+            10-check-path:
+              command: !Sub
+                - >-
+                  ${PowershellCommand} -Command "
+                  Import-Module P3Utils;
+                  Invoke-RetryCommand -Command Test-Path -ArgList @{ Path='filesystem::${UserProfileDiskPath}' } -Verbose -ErrorAction Stop" || ${SignalFailure}
+                - PowershellCommand: !FindInMap [ShellCommandMap, powershell, command]
+                  SignalFailure: !Sub
+                    - (${Command} --stack ${AWS::StackName} --region ${AWS::Region} && exit /b 1)
+                    - Command: !FindInMap [CfnUtilsMap, Signal, Failure]
+              waitAfterCompletion: '0'
         ps-modules:
           files:
             'C:\Program Files\WindowsPowerShell\Modules\P3Utils\P3Utils.psd1':

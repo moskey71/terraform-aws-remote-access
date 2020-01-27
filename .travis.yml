@@ -24,6 +24,22 @@ jobs:
       name: JSON Lint/Format Verification
       script: make json/lint
     - stage: lint
+      name: YAML Lint/Format Verification
+      install:
+        - pip install -r .requirements/yamllint.txt
+        - yamllint --version
+      language: python
+      script:
+        - make yaml/lint
+    - stage: lint
+      name: CFN Lint/Format Verification
+      install:
+        - pip install -r .requirements/cfn-lint.txt
+        - cfn-lint --version
+      language: python
+      script:
+        - make cfn/lint
+    - stage: lint
       name: Terraform Lint/Format Verification
       install:
         - make terraform/install

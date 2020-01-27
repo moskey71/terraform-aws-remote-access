@@ -1,0 +1,10 @@
+extends: default
+
+rules:
+  truthy: disable
+  document-start: disable
+  indentation:
+    spaces: 2
+    indent-sequences: true
+  line-length:
+    max: 800
