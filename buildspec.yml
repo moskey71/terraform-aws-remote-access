@@ -59,7 +59,7 @@ phases:
   post_build:
     commands:
       - |
-        for module in $DEPLOYORDER; do
+        for module in $DESTROYORDER; do
           if [ "${DESTROY_AFTER_TEST}" = "true" ]; then cd $START_DIR/modules/${module} && terraform destroy -no-color -input=false -force; fi
         done
 
